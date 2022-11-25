@@ -3,9 +3,25 @@ import config from '../config.json'
 import styled from 'styled-components'
 import Menu from '../src/components/Menu'
 import { StyledTimeline } from '../src/components/Timeline'
+import { videoService } from '../src/components/services/videoService'
 
 function HomePage() {
+  const service = videoService()
   const [valorDoFiltro, setValorDoFiltro] = React.useState('')
+  const [playlists, setPlayLists] = React.useState({})
+
+  React.useEffect(() => {
+    service.getAllVideos().then(dados => {
+      const novasPlaylists = { ...playlists }
+      dados.data?.forEach(video => {
+        if (!novasPlaylists[video.playlist]) {
+          novasPlaylists[video.playlist] = []
+        }
+        novasPlaylists[video.playlist].push('videos')
+      })
+      setPlayLists(novasPlaylists)
+    })
+  }, [])
 
   return (
     <>
